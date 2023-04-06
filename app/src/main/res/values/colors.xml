@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="lightPink">#FFEBDDFF</color>
     <color name="transparent">#00000000</color>
+    <color name="hover">#30000000</color>
 </resources>
