@@ -65,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
         lvNote.setOnItemClickListener((new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Note noteItem = (Note) lvNote.getSelectedItem();
+                System.out.println(i);
+                Note noteItem = arrayList.get(i);
                 System.out.println(noteItem.getTitle());
                 System.out.println(noteItem.getDesc());
             }

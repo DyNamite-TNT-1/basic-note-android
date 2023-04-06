@@ -55,9 +55,9 @@ public class NoteAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
-        private TextView tvId;
-        private TextView tvTitle;
-        private TextView tvDesc;
+        private final TextView tvId;
+        private final TextView tvTitle;
+        private final TextView tvDesc;
         public ViewHolder(@NonNull View view) {
             this.tvId = view.findViewById(R.id.tvId);
             this.tvTitle = view.findViewById(R.id.tvTitle);

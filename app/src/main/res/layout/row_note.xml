@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="5dp">
+    android:padding="5dp"
+    android:background="@drawable/bg_note">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="8"
         android:orientation="vertical"
@@ -14,7 +15,7 @@
 
         <TextView
             android:id="@+id/tvId"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/id"
             android:textColor="@color/teal_700"
@@ -41,7 +42,6 @@
         android:id="@+id/checkbox_done"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:padding="8dp"
         android:text="@string/done" />
 </LinearLayout>
