@@ -40,10 +40,17 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent = result.getData();
                         if (intent != null) {
                             //Extract data here
-                            int id = arrayList.size();
+                            String idStr = intent.getStringExtra("id");
                             String title = intent.getStringExtra("title");
                             String desc = intent.getStringExtra("desc");
-                            arrayList.add(new Note(Integer.toString(++id), title, desc, false));
+                            Boolean isDone = intent.getBooleanExtra("done", false);
+                            if (idStr != null) {
+                                int position = Integer.parseInt(idStr);
+                                arrayList.set(position, new Note(idStr, title, desc, isDone));
+                            } else {
+                                int length = arrayList.size();
+                                arrayList.add(new Note(Integer.toString(length), title, desc, isDone));
+                            }
                             arrayAdapter.notifyDataSetChanged();
                         }
                     }
@@ -65,29 +72,33 @@ public class MainActivity extends AppCompatActivity {
         lvNote.setOnItemClickListener((new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                System.out.println(i);
                 Note noteItem = arrayList.get(i);
                 System.out.println(noteItem.getTitle());
                 System.out.println(noteItem.getDesc());
+                Intent intent = new Intent(MainActivity.this, AddNewNote.class);
+                intent.putExtra("id", noteItem.getId());
+                intent.putExtra("title", noteItem.getTitle());
+                intent.putExtra("desc", noteItem.getDesc());
+                intent.putExtra("done", noteItem.getDone());
+                activityLauncher.launch(intent);
             }
-        }) );
+        }));
 
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, AddNewNote.class);
             activityLauncher.launch(intent);
         });
-
-
     }
 
     public void fakeData() {
         ArrayList<String> fakeTitle;
-        fakeTitle = new ArrayList<>(Arrays.asList("Do task 1", "Do research 1", "Check task 2", "Finish task 3", "Review task 4"));
-
-        String desc = "This is description";
+        ArrayList<Boolean> fakeDone;
+        fakeTitle = new ArrayList<>(Arrays.asList("Do task 1", "Do research 1", "Check task 2", "Finish task 3", "Review task 4", "Do research 2", "Create task 5", "Do task 5"));
+        fakeDone = new ArrayList<>(Arrays.asList(true, true, false, true, false, false, true, true));
+        String desc = "This is note description of task ";
 
         for (int i = 0; i < fakeTitle.size(); i++) {
-            arrayList.add(new Note(Integer.toString(i), fakeTitle.get(i), desc, false));
+            arrayList.add(new Note(Integer.toString(i), fakeTitle.get(i), desc.concat(Integer.toString(i)), fakeDone.get(i)));
         }
     }
 }

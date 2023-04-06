@@ -39,7 +39,7 @@
     </LinearLayout>
 
     <CheckBox
-        android:id="@+id/checkbox_done"
+        android:id="@+id/checkboxDone"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:padding="8dp"

@@ -7,11 +7,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 public class AddNewNote extends AppCompatActivity {
     private EditText edtTitle, edtDesc;
-    private Button btnDone;
+    private Button btnAdd;
+    private CheckBox checkBoxDone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,14 +22,30 @@ public class AddNewNote extends AppCompatActivity {
 
         edtTitle = findViewById(R.id.edtTitle);
         edtDesc = findViewById(R.id.edtDescription);
-        btnDone = findViewById(R.id.btnDone);
+        btnAdd = findViewById(R.id.btnAdd);
+        checkBoxDone = findViewById(R.id.checkboxDone2);
 
-        btnDone.setOnClickListener(new View.OnClickListener() {
+        String id = getIntent().getStringExtra("id");
+        String title = getIntent().getStringExtra("title");
+        String desc = getIntent().getStringExtra("desc");
+        boolean isDone = getIntent().getBooleanExtra("done", false);
+        if (id != null) {
+            edtTitle.setText(title);
+            edtDesc.setText(desc);
+            btnAdd.setText("Edit");
+            checkBoxDone.setChecked(isDone);
+        }
+
+        btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
+                if (id != null) {
+                    intent.putExtra("id", id);
+                }
                 intent.putExtra("title", edtTitle.getText().toString());
                 intent.putExtra("desc", edtDesc.getText().toString());
+//                intent.putExtra("done", checkBoxDone..toString());
                 setResult(Activity.RESULT_OK, intent);
                 AddNewNote.super.onBackPressed();
             }

@@ -5,11 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
 import com.example.basicnote.models.Note;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 
@@ -36,6 +39,7 @@ public class NoteAdapter extends BaseAdapter {
         viewHolder.tvId.setText(note.getId());
         viewHolder.tvTitle.setText(note.getTitle());
         viewHolder.tvDesc.setText(note.getDesc());
+        viewHolder.checkBoxDone.setChecked(note.getDone());
         return convertView;
     }
 
@@ -58,10 +62,13 @@ public class NoteAdapter extends BaseAdapter {
         private final TextView tvId;
         private final TextView tvTitle;
         private final TextView tvDesc;
+        private final CheckBox checkBoxDone;
+
         public ViewHolder(@NonNull View view) {
             this.tvId = view.findViewById(R.id.tvId);
             this.tvTitle = view.findViewById(R.id.tvTitle);
             this.tvDesc = view.findViewById(R.id.tvDesc);
+            this.checkBoxDone = view.findViewById(R.id.checkboxDone);
         }
     }
 }
