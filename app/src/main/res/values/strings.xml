@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Basic Note</string>
+    <string name="add">add</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="done">Done</string>
+    <string name="id">Id</string>
+</resources>
