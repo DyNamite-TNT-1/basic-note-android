@@ -1,13 +1,23 @@
 package com.example.basicnote;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +26,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.basicnote.models.Note;
+import com.example.basicnote.my_interface.IClickItemNoteListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -24,11 +35,11 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    private ListView lvNote;
+    private RecyclerView rvNote;
 
     FloatingActionButton fab;
     ArrayList<Note> arrayList = new ArrayList<>();
-    NoteAdapter arrayAdapter;
+    NoteRvAdapter arrayAdapter;
 
     ActivityResultLauncher<Intent> activityLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -41,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent = result.getData();
                         if (intent != null) {
                             //Extract data here
+
                             String idStr = intent.getStringExtra("id");
                             String title = intent.getStringExtra("title");
                             String desc = intent.getStringExtra("desc");
@@ -64,25 +76,48 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setControl();
         fakeData();
-        arrayAdapter = new NoteAdapter(this, arrayList);
-        lvNote.setAdapter(arrayAdapter);
+//        setControl();
 
-        lvNote.setOnItemClickListener((new AdapterView.OnItemClickListener() {
+        fab = findViewById(R.id.fabAdd);
+        rvNote = findViewById(R.id.rvNote);
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
+        rvNote.setLayoutManager(layoutManager);
+
+
+//        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+//        rvNote.addItemDecoration(itemDecoration);
+
+        arrayAdapter = new NoteRvAdapter(arrayList, new IClickItemNoteListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Note noteItem = arrayList.get(i);
-                System.out.println(noteItem.getTitle());
-                System.out.println(noteItem.getDesc());
+            public void onClickItemNote(Note note) {
                 Intent intent = new Intent(MainActivity.this, AddNewNote.class);
-                intent.putExtra("id", noteItem.getId());
-                intent.putExtra("title", noteItem.getTitle());
-                intent.putExtra("desc", noteItem.getDesc());
-                intent.putExtra("done", noteItem.getDone());
+                intent.putExtra("id", note.getId());
+                intent.putExtra("title", note.getTitle());
+                intent.putExtra("desc", note.getDesc());
+                intent.putExtra("done", note.getDone());
                 activityLauncher.launch(intent);
             }
-        }));
+        });
+
+        rvNote.setAdapter(arrayAdapter);
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                arrayList.remove(position);
+                arrayAdapter.notifyDataSetChanged();
+            }
+        });
+
+        itemTouchHelper.attachToRecyclerView(rvNote);
 
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, AddNewNote.class);
@@ -91,8 +126,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setControl() {
-        lvNote = findViewById(R.id.lvNote);
         fab = findViewById(R.id.fabAdd);
+        rvNote = findViewById(R.id.rvNote);
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
+        rvNote.setLayoutManager(layoutManager);
+
+        rvNote.setAdapter(arrayAdapter);
+
+        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        rvNote.addItemDecoration(itemDecoration);
     }
 
     public void fakeData() {

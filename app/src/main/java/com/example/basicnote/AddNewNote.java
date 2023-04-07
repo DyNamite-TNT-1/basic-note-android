@@ -45,7 +45,7 @@ public class AddNewNote extends AppCompatActivity {
                 }
                 intent.putExtra("title", edtTitle.getText().toString());
                 intent.putExtra("desc", edtDesc.getText().toString());
-//                intent.putExtra("done", checkBoxDone..toString());
+                intent.putExtra("done", checkBoxDone.isChecked());
                 setResult(Activity.RESULT_OK, intent);
                 AddNewNote.super.onBackPressed();
             }
