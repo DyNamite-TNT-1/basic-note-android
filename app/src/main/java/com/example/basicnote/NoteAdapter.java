@@ -40,6 +40,14 @@ public class NoteAdapter extends BaseAdapter {
         viewHolder.tvTitle.setText(note.getTitle());
         viewHolder.tvDesc.setText(note.getDesc());
         viewHolder.checkBoxDone.setChecked(note.getDone());
+        viewHolder.checkBoxDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,
+                                         boolean isChecked) {
+                viewHolder.checkBoxDone.setChecked(isChecked);
+                arrayList.get(position).setDone(isChecked);
+            }
+        });
         return convertView;
     }
 

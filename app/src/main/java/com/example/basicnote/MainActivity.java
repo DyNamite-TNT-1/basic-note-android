@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ListView lvNote;
 
+    FloatingActionButton fab;
     ArrayList<Note> arrayList = new ArrayList<>();
     NoteAdapter arrayAdapter;
 
@@ -62,9 +63,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        lvNote = findViewById(R.id.lvNote);
-        FloatingActionButton fab = findViewById(R.id.fabAdd);
 
+        setControl();
         fakeData();
         arrayAdapter = new NoteAdapter(this, arrayList);
         lvNote.setAdapter(arrayAdapter);
@@ -88,6 +88,11 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, AddNewNote.class);
             activityLauncher.launch(intent);
         });
+    }
+
+    private void setControl() {
+        lvNote = findViewById(R.id.lvNote);
+        fab = findViewById(R.id.fabAdd);
     }
 
     public void fakeData() {
