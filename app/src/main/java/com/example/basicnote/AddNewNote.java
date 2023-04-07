@@ -25,11 +25,12 @@ public class AddNewNote extends AppCompatActivity {
         btnAdd = findViewById(R.id.btnAdd);
         checkBoxDone = findViewById(R.id.checkboxDone2);
 
+        int position = getIntent().getIntExtra("position", -1);
         String id = getIntent().getStringExtra("id");
         String title = getIntent().getStringExtra("title");
         String desc = getIntent().getStringExtra("desc");
         boolean isDone = getIntent().getBooleanExtra("done", false);
-        if (id != null) {
+        if (position != -1) {
             edtTitle.setText(title);
             edtDesc.setText(desc);
             btnAdd.setText("Edit");
@@ -40,7 +41,8 @@ public class AddNewNote extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
-                if (id != null) {
+                if (position != -1) {
+                    intent.putExtra("position", position);
                     intent.putExtra("id", id);
                 }
                 intent.putExtra("title", edtTitle.getText().toString());

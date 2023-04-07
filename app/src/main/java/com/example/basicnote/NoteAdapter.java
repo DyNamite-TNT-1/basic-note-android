@@ -45,6 +45,23 @@ class NoteRvAdapter extends RecyclerView.Adapter<NoteRvAdapter.ViewHolder> {
             this.tvDesc = view.findViewById(R.id.tvDesc);
             this.checkBoxDone = view.findViewById(R.id.checkboxDone);
             this.layoutItem = view.findViewById(R.id.layoutNote);
+
+            checkBoxDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView,
+                                             boolean isChecked) {
+                    checkBoxDone.setChecked(isChecked);
+                    arrayList.get(getAdapterPosition()).setDone(isChecked);
+                }
+            });
+
+            layoutItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    iClickItemNoteListener.onClickItemNote(arrayList.get(getAdapterPosition()));
+                    notifyDataSetChanged();
+                }
+            });
         }
     }
 
@@ -66,21 +83,6 @@ class NoteRvAdapter extends RecyclerView.Adapter<NoteRvAdapter.ViewHolder> {
         holder.tvTitle.setText(note.getTitle());
         holder.tvDesc.setText(note.getDesc());
         holder.checkBoxDone.setChecked(note.getDone());
-        holder.checkBoxDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,
-                                         boolean isChecked) {
-                holder.checkBoxDone.setChecked(isChecked);
-                note.setDone(isChecked);
-            }
-        });
-        holder.layoutItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                iClickItemNoteListener.onClickItemNote(note);
-                notifyDataSetChanged();
-            }
-        });
     }
 
     @Override

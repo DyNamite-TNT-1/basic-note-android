@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Note> arrayList = new ArrayList<>();
     NoteRvAdapter arrayAdapter;
 
+    int id;
+
     ActivityResultLauncher<Intent> activityLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -52,17 +54,18 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent = result.getData();
                         if (intent != null) {
                             //Extract data here
-
+                            int positionInt = intent.getIntExtra("position", -1);
                             String idStr = intent.getStringExtra("id");
                             String title = intent.getStringExtra("title");
                             String desc = intent.getStringExtra("desc");
                             Boolean isDone = intent.getBooleanExtra("done", false);
-                            if (idStr != null) {
-                                int position = Integer.parseInt(idStr);
+                            if (positionInt != -1) {
+                                int position = positionInt;
+                                System.out.println(position);
+                                System.out.println(arrayList.size());
                                 arrayList.set(position, new Note(idStr, title, desc, isDone));
                             } else {
-                                int length = arrayList.size();
-                                arrayList.add(new Note(Integer.toString(length), title, desc, isDone));
+                                arrayList.add(new Note(Integer.toString(id++), title, desc, isDone));
                             }
                             arrayAdapter.notifyDataSetChanged();
                         }
@@ -76,8 +79,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        id = 0;
+
         fakeData();
-//        setControl();
 
         fab = findViewById(R.id.fabAdd);
         rvNote = findViewById(R.id.rvNote);
@@ -85,14 +89,11 @@ public class MainActivity extends AppCompatActivity {
                 = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
         rvNote.setLayoutManager(layoutManager);
 
-
-//        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-//        rvNote.addItemDecoration(itemDecoration);
-
         arrayAdapter = new NoteRvAdapter(arrayList, new IClickItemNoteListener() {
             @Override
             public void onClickItemNote(Note note) {
                 Intent intent = new Intent(MainActivity.this, AddNewNote.class);
+                intent.putExtra("position", arrayList.indexOf(note));
                 intent.putExtra("id", note.getId());
                 intent.putExtra("title", note.getTitle());
                 intent.putExtra("desc", note.getDesc());
@@ -148,5 +149,6 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < fakeTitle.size(); i++) {
             arrayList.add(new Note(Integer.toString(i), fakeTitle.get(i), desc.concat(Integer.toString(i)), fakeDone.get(i)));
         }
+        id = arrayList.size();
     }
 }
