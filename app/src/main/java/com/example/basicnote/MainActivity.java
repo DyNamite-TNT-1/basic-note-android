@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -33,8 +34,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
-
     private RecyclerView rvNote;
 
     FloatingActionButton fab;
@@ -43,44 +42,17 @@ public class MainActivity extends AppCompatActivity {
 
     int id;
 
-    ActivityResultLauncher<Intent> activityLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    Log.d(TAG, "onActivityResult: ");
-
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent intent = result.getData();
-                        if (intent != null) {
-                            //Extract data here
-                            int positionInt = intent.getIntExtra("position", -1);
-                            String idStr = intent.getStringExtra("id");
-                            String title = intent.getStringExtra("title");
-                            String desc = intent.getStringExtra("desc");
-                            Boolean isDone = intent.getBooleanExtra("done", false);
-                            if (positionInt != -1) {
-                                int position = positionInt;
-                                System.out.println(position);
-                                System.out.println(arrayList.size());
-                                arrayList.set(position, new Note(idStr, title, desc, isDone));
-                            } else {
-                                arrayList.add(new Note(Integer.toString(id++), title, desc, isDone));
-                            }
-                            arrayAdapter.notifyDataSetChanged();
-                        }
-                    }
-                }
-            }
-    );
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        id = 0;
+        //invisible back button
+        ImageButton imageButton = findViewById(R.id.action_bar_back);
+        imageButton.setVisibility(View.INVISIBLE);
+        //
 
+        id = 0;
         fakeData();
 
         fab = findViewById(R.id.fabAdd);
@@ -157,4 +129,34 @@ public class MainActivity extends AppCompatActivity {
         }
         id = arrayList.size();
     }
+
+    ActivityResultLauncher<Intent> activityLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent intent = result.getData();
+                        if (intent != null) {
+                            //Extract data here
+                            int positionInt = intent.getIntExtra("position", -1);
+                            String idStr = intent.getStringExtra("id");
+                            String title = intent.getStringExtra("title");
+                            String desc = intent.getStringExtra("desc");
+                            Boolean isDone = intent.getBooleanExtra("done", false);
+                            if (positionInt != -1) {
+                                int position = positionInt;
+                                System.out.println(position);
+                                System.out.println(arrayList.size());
+                                arrayList.set(position, new Note(idStr, title, desc, isDone));
+                            } else {
+                                arrayList.add(new Note(Integer.toString(id++), title, desc, isDone));
+                            }
+                            arrayAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+            }
+    );
 }

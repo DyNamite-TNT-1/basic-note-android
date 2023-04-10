@@ -1,5 +1,6 @@
 package com.example.basicnote;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -9,6 +10,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
+
+import java.util.Objects;
 
 public class AddNewNote extends AppCompatActivity {
     private EditText edtTitle, edtDesc;
@@ -19,6 +23,14 @@ public class AddNewNote extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_note);
+
+        ImageButton imageButton = (ImageButton) findViewById(R.id.action_bar_back) ;
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         edtTitle = findViewById(R.id.edtTitle);
         edtDesc = findViewById(R.id.edtDescription);
