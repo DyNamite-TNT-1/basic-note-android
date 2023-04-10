@@ -100,6 +100,12 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("done", note.getDone());
                 activityLauncher.launch(intent);
             }
+
+            @Override
+            public void onDeleteItemNote(Note note) {
+                arrayList.remove(note);
+                arrayAdapter.notifyDataSetChanged();
+            }
         });
 
         rvNote.setAdapter(arrayAdapter);

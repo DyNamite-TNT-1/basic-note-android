@@ -36,6 +36,8 @@ class NoteRvAdapter extends RecyclerView.Adapter<NoteRvAdapter.ViewHolder> {
         private final TextView tvDesc;
         private final CheckBox checkBoxDone;
 
+        private final ImageButton btnDel;
+
         private final LinearLayout layoutItem;
 
         public ViewHolder(@NonNull View view) {
@@ -45,6 +47,7 @@ class NoteRvAdapter extends RecyclerView.Adapter<NoteRvAdapter.ViewHolder> {
             this.tvDesc = view.findViewById(R.id.tvDesc);
             this.checkBoxDone = view.findViewById(R.id.checkboxDone);
             this.layoutItem = view.findViewById(R.id.layoutNote);
+            this.btnDel = view.findViewById(R.id.btnDel);
 
             checkBoxDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -59,13 +62,20 @@ class NoteRvAdapter extends RecyclerView.Adapter<NoteRvAdapter.ViewHolder> {
                 @Override
                 public void onClick(View view) {
                     iClickItemNoteListener.onClickItemNote(arrayList.get(getAdapterPosition()));
-                    notifyDataSetChanged();
+                }
+            });
+
+            btnDel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    iClickItemNoteListener.onDeleteItemNote(arrayList.get(getAdapterPosition()));
                 }
             });
         }
     }
 
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_note, parent, false);

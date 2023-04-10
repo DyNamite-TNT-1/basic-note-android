@@ -5,4 +5,6 @@ import com.example.basicnote.models.Note;
 public interface IClickItemNoteListener {
 
     void onClickItemNote(Note note);
+
+    void onDeleteItemNote(Note note);
 }
