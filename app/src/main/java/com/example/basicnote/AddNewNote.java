@@ -37,16 +37,26 @@ public class AddNewNote extends AppCompatActivity {
             checkBoxDone.setChecked(isDone);
         }
 
+
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // validate
+                if (edtTitle.getText().toString().trim().length() == 0) {
+                    edtTitle.setError("Title is required!");
+                    return;
+                }
+
                 Intent intent = new Intent();
                 if (position != -1) {
                     intent.putExtra("position", position);
                     intent.putExtra("id", id);
                 }
-                intent.putExtra("title", edtTitle.getText().toString());
-                intent.putExtra("desc", edtDesc.getText().toString());
+
+                String title = edtTitle.getText().toString().replaceAll("\\s+", " "); //remove duplicate whitespaces
+                String desc = edtDesc.getText().toString().replaceAll("\\s+", " ");
+                intent.putExtra("title", title);
+                intent.putExtra("desc", desc);
                 intent.putExtra("done", checkBoxDone.isChecked());
                 setResult(Activity.RESULT_OK, intent);
                 AddNewNote.super.onBackPressed();
