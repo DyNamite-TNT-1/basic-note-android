@@ -48,8 +48,6 @@ public class AddNewNote extends AppCompatActivity {
             btnAdd.setText("Edit");
             checkBoxDone.setChecked(isDone);
         }
-
-
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

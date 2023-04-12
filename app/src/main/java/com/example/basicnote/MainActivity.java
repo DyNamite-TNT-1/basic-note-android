@@ -1,30 +1,22 @@
 package com.example.basicnote;
 
-import static androidx.core.content.ContentProviderCompat.requireContext;
-
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.basicnote.models.Note;
 import com.example.basicnote.my_interface.IClickItemNoteListener;
@@ -50,7 +42,17 @@ public class MainActivity extends AppCompatActivity {
         //invisible back button
         ImageButton imageButton = findViewById(R.id.action_bar_back);
         imageButton.setVisibility(View.INVISIBLE);
-        //
+
+        final SwipeRefreshLayout pullToRefresh = findViewById(R.id.pullToRefresh);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshData();
+                fakeData();
+                arrayAdapter.notifyDataSetChanged();
+                pullToRefresh.setRefreshing(false);
+            }
+        });
 
         id = 0;
         fakeData();
@@ -130,6 +132,14 @@ public class MainActivity extends AppCompatActivity {
         id = arrayList.size();
     }
 
+    public void refreshData() {
+        if (arrayList.isEmpty()) {
+            return;
+        }
+
+        arrayList.clear();
+    }
+
     ActivityResultLauncher<Intent> activityLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -146,10 +156,7 @@ public class MainActivity extends AppCompatActivity {
                             String desc = intent.getStringExtra("desc");
                             Boolean isDone = intent.getBooleanExtra("done", false);
                             if (positionInt != -1) {
-                                int position = positionInt;
-                                System.out.println(position);
-                                System.out.println(arrayList.size());
-                                arrayList.set(position, new Note(idStr, title, desc, isDone));
+                                arrayList.set(positionInt, new Note(idStr, title, desc, isDone));
                             } else {
                                 arrayList.add(new Note(Integer.toString(id++), title, desc, isDone));
                             }
