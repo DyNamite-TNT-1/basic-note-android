@@ -1,16 +1,24 @@
 package com.example.basicnote.models;
 
-public class Note {
-    private String id;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+import java.io.Serializable;
+
+@Entity(tableName = "note")
+public class Note implements Serializable {
+    @PrimaryKey(autoGenerate = true)
+    private int id;
+    //@ColumnInfo(name = "title") Nếu muốn đặt tên Column thì xài @ColumnInfo và truyền vào name, không thì sẽ lấy mặc định tên thuộc tính
     private String title;
     private String desc;
     private Boolean done;
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -38,10 +46,7 @@ public class Note {
         this.done = done;
     }
 
-    public Note() {};
-
-    public Note(String id, String title, String desc, Boolean done) {
-        this.id = id;
+    public Note(String title, String desc, Boolean done) {
         this.title = title;
         this.desc = desc;
         this.done = done;
