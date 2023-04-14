@@ -15,28 +15,6 @@
             android:id="@+id/customActionBar"
             layout="@layout/custom_action_bar_layout" />
 
-        <TextView
-            android:id="@+id/tvDeleteAll"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_margin="10dp"
-            android:text="@string/delete_all"
-            android:textColor="@color/teal_700"
-            android:textSize="20sp" />
-
-        <EditText
-            android:id="@+id/edtSearch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:background="@drawable/bg_edittext"
-            android:hint="Enter title"
-            android:imeOptions="actionSearch"
-            android:inputType="text"
-            android:padding="10dp"
-            android:textColor="@color/black" />
-
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/pullToRefresh"
             android:layout_width="match_parent"
@@ -59,7 +37,7 @@
         android:id="@+id/fabAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
+        android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:contentDescription="@string/add"
         android:src="@drawable/ic_add"

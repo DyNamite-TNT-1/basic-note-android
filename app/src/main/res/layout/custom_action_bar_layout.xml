@@ -2,28 +2,96 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:background="@drawable/textlines">
+    android:background="@drawable/textlines"
+    android:orientation="horizontal">
+
+    <ImageButton
+        android:id="@+id/action_bar_back"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/bg_button_appbar"
+        android:contentDescription="@string/back"
+        android:padding="10dp"
+        android:src="@drawable/ic_back" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:padding="10dp"
+        android:text="@string/app_name"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/layoutSearch"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="16dp"
+        android:orientation="horizontal"
+        android:visibility="invisible">
 
         <ImageButton
-            android:id="@+id/action_bar_back"
+            android:id="@+id/imbCancel"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_height="40dp"
+            android:layout_gravity="end|center_vertical"
             android:background="@drawable/bg_button_appbar"
+            android:contentDescription="@string/search"
             android:padding="10dp"
-            android:src="@drawable/ic_back"
-             />
+            android:src="@drawable/ic_cancel" />
 
-        <TextView
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:padding="10dp"
-            android:text="@string/app_name"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
+            android:layout_height="match_parent">
 
-           />
+            <EditText
+                android:id="@+id/edtSearch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_edittext"
+                android:hint="@string/enter_title"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:padding="10dp"
+                android:textColor="@color/black" />
+
+            <ImageButton
+                android:id="@+id/imbClear"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/bg_button_appbar"
+                android:contentDescription="@string/clear"
+                android:padding="10dp"
+                android:src="@drawable/ic_clear"
+                android:visibility="invisible"/>
+        </FrameLayout>
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/action_bar_search"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_gravity="end|center_vertical"
+        android:layout_marginEnd="45dp"
+        android:background="@drawable/bg_button_appbar"
+        android:contentDescription="@string/search"
+        android:padding="10dp"
+        android:src="@drawable/ic_search"
+        android:visibility="visible" />
+
+    <ImageButton
+        android:id="@+id/action_bar_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_gravity="end|center_vertical"
+        android:background="@drawable/bg_button_appbar"
+        android:contentDescription="@string/delete_all"
+        android:padding="10dp"
+        android:src="@drawable/ic_delete_all"
+        android:visibility="visible" />
 </FrameLayout>

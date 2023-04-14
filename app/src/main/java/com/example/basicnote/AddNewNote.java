@@ -1,6 +1,5 @@
 package com.example.basicnote;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -19,11 +18,9 @@ import com.example.basicnote.database.NoteDatabase;
 import com.example.basicnote.models.Note;
 
 import java.util.List;
-import java.util.Objects;
 
 public class AddNewNote extends AppCompatActivity {
     private EditText edtTitle, edtDesc;
-    private Button btnAdd;
     private CheckBox checkBoxDone;
 
     private Note note;
@@ -33,18 +30,20 @@ public class AddNewNote extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_note);
 
-        ImageButton imageButton = (ImageButton) findViewById(R.id.action_bar_back);
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        ImageButton imbBack = findViewById(R.id.action_bar_back);
+        imbBack.setOnClickListener(v -> finish());
+
+        //invisible app bar button
+        ImageButton imbSearch = findViewById(R.id.action_bar_search);
+        imbSearch.setVisibility(View.INVISIBLE);
+        ImageButton imbDeleteAll = findViewById(R.id.action_bar_delete);
+        imbDeleteAll.setVisibility(View.INVISIBLE);
+
 
         edtTitle = findViewById(R.id.edtTitle);
         edtDesc = findViewById(R.id.edtDescription);
         checkBoxDone = findViewById(R.id.checkboxDone2);
-        btnAdd = findViewById(R.id.btnAdd);
+        Button btnAdd = findViewById(R.id.btnAdd);
 
         note = (Note) getIntent().getSerializableExtra("object_note");
         System.out.println(note);
@@ -55,57 +54,54 @@ public class AddNewNote extends AppCompatActivity {
             btnAdd.setText("Edit");
         }
 
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // validate
-                if (edtTitle.getText().toString().trim().length() == 0) {
-                    edtTitle.setError("Title is required!");
-                    return;
-                }
-                if (edtDesc.getText().toString().trim().length() == 0) {
-                    edtDesc.setError("Description is required!");
-                    return;
-                }
-
-                Intent intent = new Intent();
-
-                String title = edtTitle.getText().toString().replaceAll("\\s+", " "); //remove duplicate whitespaces
-                String desc = edtDesc.getText().toString().replaceAll("\\s+", " ");
-
-                if (TextUtils.isEmpty(title) || TextUtils.isEmpty(desc)) {
-                    return;
-                }
-
-                if (note == null) { //add
-                    Note note = new Note(title, desc, checkBoxDone.isChecked());
-                    if (isNoteExist(note)) {
-                        Toast.makeText(AddNewNote.this, "Note exist", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    NoteDatabase.getInstance(AddNewNote.this).noteDAO().insertNote(note);
-                    Toast.makeText(AddNewNote.this, "Add note successfully", Toast.LENGTH_SHORT).show();
-                } else { //update
-                    note.setTitle(title);
-                    note.setDesc(desc);
-                    note.setDone(checkBoxDone.isChecked());
-                    NoteDatabase.getInstance(AddNewNote.this).noteDAO().updateNote(note);
-                    Toast.makeText(AddNewNote.this, "Update note successfully", Toast.LENGTH_SHORT).show();
-
-                }
-
-                edtTitle.setText("");
-                edtDesc.setText("");
-
-                hideSofeKeyboard();
-
-                setResult(Activity.RESULT_OK, intent);
-                AddNewNote.super.onBackPressed();
+        btnAdd.setOnClickListener(view -> {
+            // validate
+            if (edtTitle.getText().toString().trim().length() == 0) {
+                edtTitle.setError("Title is required!");
+                return;
             }
+            if (edtDesc.getText().toString().trim().length() == 0) {
+                edtDesc.setError("Description is required!");
+                return;
+            }
+
+            Intent intent = new Intent();
+
+            String title = edtTitle.getText().toString().replaceAll("\\s+", " "); //remove duplicate whitespaces
+            String desc = edtDesc.getText().toString().replaceAll("\\s+", " ");
+
+            if (TextUtils.isEmpty(title) || TextUtils.isEmpty(desc)) {
+                return;
+            }
+
+            if (note == null) { //add
+                Note note = new Note(title, desc, checkBoxDone.isChecked());
+                if (isNoteExist(note)) {
+                    Toast.makeText(AddNewNote.this, "Note exist", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                NoteDatabase.getInstance(AddNewNote.this).noteDAO().insertNote(note);
+                Toast.makeText(AddNewNote.this, "Add note successfully", Toast.LENGTH_SHORT).show();
+            } else { //update
+                note.setTitle(title);
+                note.setDesc(desc);
+                note.setDone(checkBoxDone.isChecked());
+                NoteDatabase.getInstance(AddNewNote.this).noteDAO().updateNote(note);
+                Toast.makeText(AddNewNote.this, "Update note successfully", Toast.LENGTH_SHORT).show();
+
+            }
+
+            edtTitle.setText("");
+            edtDesc.setText("");
+
+            hideSoftKeyboard();
+
+            setResult(Activity.RESULT_OK, intent);
+            AddNewNote.super.onBackPressed();
         });
     }
 
-    public void hideSofeKeyboard() {
+    public void hideSoftKeyboard() {
         try {
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);

@@ -1,12 +1,9 @@
 package com.example.basicnote;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,17 +11,16 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.basicnote.database.NoteDatabase;
@@ -40,9 +36,10 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton fab;
     private List<Note> listNotes;
     private NoteRvAdapter noteRvAdapter;
-    private TextView tvDeleteAll;
+    private LinearLayout layoutSearch;
     private EditText edtSearch;
     private SwipeRefreshLayout pullToRefresh;
+    private ImageButton imbDeleteAll, imbSearch, imbCancel, imbClear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +48,17 @@ public class MainActivity extends AppCompatActivity {
 
         initUI();
 
-        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshData();
-                noteRvAdapter.notifyDataSetChanged();
-                pullToRefresh.setRefreshing(false);
-            }
+        imbSearch.setOnClickListener(view -> {
+            layoutSearch.setVisibility(View.VISIBLE);
+            imbSearch.setVisibility(View.INVISIBLE);
+            imbDeleteAll.setVisibility(View.INVISIBLE);
+        });
+        imbDeleteAll.setOnClickListener(v -> clickDeleteAllNote());
+
+        pullToRefresh.setOnRefreshListener(() -> {
+            refreshData();
+            noteRvAdapter.notifyDataSetChanged();
+            pullToRefresh.setRefreshing(false);
         });
 
 
@@ -84,42 +85,33 @@ public class MainActivity extends AppCompatActivity {
 
         rvNote.setAdapter(noteRvAdapter);
 
-//        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-//            @Override
-//            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-//                return false;
-//            }
-//
-//            @Override
-//            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-//                int position = viewHolder.getAdapterPosition();
-//                listNotes.remove(position);
-//                noteRvAdapter.notifyDataSetChanged();
-//            }
-//        });
-//
-//        itemTouchHelper.attachToRecyclerView(rvNote);
+        //swipe left || right to delete
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                listNotes.remove(position);
+                noteRvAdapter.notifyDataSetChanged();
+            }
+        });
+
+        itemTouchHelper.attachToRecyclerView(rvNote);
 
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, AddNewNote.class);
             activityLauncher.launch(intent);
         });
 
-        tvDeleteAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                clickDeleteAllNote();
+        edtSearch.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                handleSearchNote();
             }
-        });
-
-        edtSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    handleSearchNote();
-                }
-                return false;
-            }
+            return false;
         });
 
         edtSearch.addTextChangedListener(new TextWatcher() {
@@ -130,23 +122,45 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 handleSearchNote();
+                if (edtSearch.getText().toString().isEmpty()) {
+                    imbClear.setVisibility(View.INVISIBLE);
+                } else {
+                    imbClear.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
             }
         });
+
+        imbCancel.setOnClickListener(view -> {
+            hideSoftKeyboard();
+            edtSearch.setText("");
+            layoutSearch.setVisibility(View.INVISIBLE);
+            imbDeleteAll.setVisibility(View.VISIBLE);
+            imbSearch.setVisibility(View.VISIBLE);
+        });
+
+        imbClear.setOnClickListener(view ->
+                edtSearch.setText("")
+        );
     }
 
     private void initUI() {
         //invisible back button
-        ImageButton imageButton = findViewById(R.id.action_bar_back);
-        imageButton.setVisibility(View.INVISIBLE);
+        ImageButton imbBack = findViewById(R.id.action_bar_back);
+        imbBack.setVisibility(View.INVISIBLE);
+
+        imbDeleteAll = findViewById(R.id.action_bar_delete);
+        imbSearch = findViewById(R.id.action_bar_search);
 
         fab = findViewById(R.id.fabAdd);
         rvNote = findViewById(R.id.rvNote);
-        tvDeleteAll = findViewById(R.id.tvDeleteAll);
+        layoutSearch = findViewById(R.id.layoutSearch);
         edtSearch = findViewById(R.id.edtSearch);
+        imbCancel = findViewById(R.id.imbCancel);
+        imbClear = findViewById(R.id.imbClear);
         pullToRefresh = findViewById(R.id.pullToRefresh);
     }
 
@@ -161,12 +175,9 @@ public class MainActivity extends AppCompatActivity {
 
     ActivityResultLauncher<Intent> activityLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        loadData();
-                    }
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    loadData();
                 }
             }
     );
@@ -175,32 +186,25 @@ public class MainActivity extends AppCompatActivity {
         new AlertDialog.Builder(MainActivity.this)
                 .setTitle("Confirm delete Note")
                 .setMessage("Are you sure?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        //Delete note
-                        NoteDatabase.getInstance(MainActivity.this).noteDAO().deleteNote(note);
-                        Toast.makeText(MainActivity.this, "Delete note successfully", Toast.LENGTH_SHORT).show();
+                .setPositiveButton("Yes", (dialogInterface, i) -> {
+                    //Delete note
+                    NoteDatabase.getInstance(MainActivity.this).noteDAO().deleteNote(note);
+                    Toast.makeText(MainActivity.this, "Delete note successfully", Toast.LENGTH_SHORT).show();
 
-                        loadData();
-                    }
+                    loadData();
                 }).setNegativeButton("No", null).show();
     }
 
     private void clickDeleteAllNote() {
-
         new AlertDialog.Builder(MainActivity.this)
                 .setTitle("Confirm delete all Note")
                 .setMessage("Are you sure?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        //Delete note
-                        NoteDatabase.getInstance(MainActivity.this).noteDAO().deleteAllNote();
-                        Toast.makeText(MainActivity.this, "Delete all note successfully", Toast.LENGTH_SHORT).show();
+                .setPositiveButton("Yes", (dialogInterface, i) -> {
+                    //Delete note
+                    NoteDatabase.getInstance(MainActivity.this).noteDAO().deleteAllNote();
+                    Toast.makeText(MainActivity.this, "Delete all note successfully", Toast.LENGTH_SHORT).show();
 
-                        loadData();
-                    }
+                    loadData();
                 }).setNegativeButton("No", null).show();
     }
 
@@ -209,5 +213,14 @@ public class MainActivity extends AppCompatActivity {
         listNotes = new ArrayList<>();
         listNotes = NoteDatabase.getInstance(MainActivity.this).noteDAO().searchNote(strKeyword);
         noteRvAdapter.setData(listNotes);
+    }
+
+    public void hideSoftKeyboard() {
+        try {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        } catch (NullPointerException ex) {
+            ex.printStackTrace();
+        }
     }
 }

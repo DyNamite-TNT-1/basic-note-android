@@ -1,12 +1,9 @@
 package com.example.basicnote;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,14 +25,14 @@ class NoteRvAdapter extends RecyclerView.Adapter<NoteRvAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    private IClickItemNoteListener iClickItemNoteListener;
+    private final IClickItemNoteListener iClickItemNoteListener;
 
     public NoteRvAdapter(List<Note> notes, IClickItemNoteListener listener) {
         this.notes = notes;
         this.iClickItemNoteListener = listener;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvId;
         private final TextView tvTitle;
         private final TextView tvDesc;
@@ -76,28 +73,14 @@ class NoteRvAdapter extends RecyclerView.Adapter<NoteRvAdapter.ViewHolder> {
         holder.tvDesc.setText(note.getDesc());
         holder.checkBoxDone.setChecked(note.getDone());
 
-        holder.checkBoxDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,
-                                         boolean isChecked) {
-                holder.checkBoxDone.setChecked(isChecked);
-                note.setDone(isChecked);
-            }
+        holder.checkBoxDone.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            holder.checkBoxDone.setChecked(isChecked);
+            note.setDone(isChecked);
         });
 
-        holder.layoutItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                iClickItemNoteListener.onClickItemNote(note);
-            }
-        });
+        holder.layoutItem.setOnClickListener(view -> iClickItemNoteListener.onClickItemNote(note));
 
-        holder.btnDel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                iClickItemNoteListener.onDeleteItemNote(note);
-            }
-        });
+        holder.btnDel.setOnClickListener(view -> iClickItemNoteListener.onDeleteItemNote(note));
     }
 
     @Override

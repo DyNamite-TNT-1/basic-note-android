@@ -8,4 +8,8 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="delete_all">Delete All</string>
+    <string name="back">Back</string>
+    <string name="search">Search</string>
+    <string name="enter_title">Enter title</string>
+    <string name="clear">Clear</string>
 </resources>
