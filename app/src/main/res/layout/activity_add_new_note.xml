@@ -30,7 +30,7 @@
         android:background="@drawable/bg_edittext"
         android:gravity="start|top"
         android:hint="@string/description"
-        android:inputType="text"
+        android:inputType="text|textMultiLine"
         android:padding="10dp"
         android:scrollHorizontally="false"
         app:layout_constraintStart_toStartOf="parent"
