@@ -18,7 +18,7 @@ public interface NoteDAO {
     @Query("SELECT * FROM note")
     List<Note> getListNote();
 
-    @Query("SELECT * FROM note where `title`= :title and `desc`= :desc")
+    @Query("SELECT * FROM note where `title`= :title or `desc`= :desc")
     List<Note> checkNote(String title, String desc);
 
     @Update
