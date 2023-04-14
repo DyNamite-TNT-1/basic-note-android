@@ -9,7 +9,7 @@ Save data in a local database using Room.
 ### Search list(Buttons on the app bar to interact with the SEARCH bar)
 <img src="https://user-images.githubusercontent.com/104590526/231943972-12fd1b2d-05b6-469b-a7d0-c4c29dc94658.png" width="200" height="450"></img>
 
-### Add new Note(Check the title's note already exists before ADDing)
+### Add new Note(CHECK the title or description os the note already exists before ADDing)
 <img src="https://user-images.githubusercontent.com/104590526/231944429-6f5b845a-3d78-4a00-9678-005b1c804b19.png" width="200" height="450"></img>
 <img src="https://user-images.githubusercontent.com/104590526/231957063-c76cb0b3-6acd-4a94-82a0-0b250816277a.png" width="200" height="450"></img>
 
