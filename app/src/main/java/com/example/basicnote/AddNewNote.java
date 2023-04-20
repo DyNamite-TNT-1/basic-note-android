@@ -60,6 +60,10 @@ public class AddNewNote extends AppCompatActivity {
                 edtTitle.setError("Title is required!");
                 return;
             }
+            if (edtTitle.getText().toString().trim().length() > 50) {
+                edtTitle.setError("The length of the title must not exceed 50 characters!");
+                return;
+            }
             if (edtDesc.getText().toString().trim().length() == 0) {
                 edtDesc.setError("Description is required!");
                 return;
@@ -88,7 +92,6 @@ public class AddNewNote extends AppCompatActivity {
                 note.setDone(checkBoxDone.isChecked());
                 NoteDatabase.getInstance(AddNewNote.this).noteDAO().updateNote(note);
                 Toast.makeText(AddNewNote.this, "Update note successfully", Toast.LENGTH_SHORT).show();
-
             }
 
             edtTitle.setText("");

@@ -1,5 +1,6 @@
 package com.example.basicnote;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,7 +79,9 @@ class NoteRvAdapter extends RecyclerView.Adapter<NoteRvAdapter.ViewHolder> {
             note.setDone(isChecked);
         });
 
-        holder.layoutItem.setOnClickListener(view -> iClickItemNoteListener.onClickItemNote(note));
+        holder.layoutItem.setOnClickListener(view -> {
+            iClickItemNoteListener.onClickItemNote(note);
+        });
 
         holder.btnDel.setOnClickListener(view -> iClickItemNoteListener.onDeleteItemNote(note));
     }
